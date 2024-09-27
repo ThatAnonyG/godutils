@@ -1,4 +1,4 @@
-package utils
+package godutils
 
 import (
 	"database/sql"
