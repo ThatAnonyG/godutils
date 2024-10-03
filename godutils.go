@@ -6,6 +6,7 @@ import (
 	"math"
 	"net/url"
 	"reflect"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -14,6 +15,16 @@ func FindInList[T any](list *[]T, fn func(T) bool) *T {
 	for i := range *list {
 		ele := &(*list)[i]
 		if fn(*ele) {
+			return ele
+		}
+	}
+	return nil
+}
+
+func FindInListP[T any](list *[]*T, fn func(*T) bool) *T {
+	for i := range *list {
+		ele := (*list)[i]
+		if fn(ele) {
 			return ele
 		}
 	}
@@ -136,4 +147,32 @@ func GetOrCreate[K comparable, V any](mapObj map[K]*V, key K) *V {
 		mapObj[key] = v
 	}
 	return v
+}
+
+func ToSnakeCase(str string) string {
+	var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
+	var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
+	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
+	return strings.ToLower(snake)
+}
+
+func FilterList[T any](list *[]T, fn func(T) bool) *[]T {
+	filtered := make([]T, 0)
+	for _, ele := range *list {
+		if fn(ele) {
+			filtered = append(filtered, ele)
+		}
+	}
+	return &filtered
+}
+
+func FilterListP[T any](list *[]*T, fn func(*T) bool) *[]*T {
+	filtered := make([]*T, 0)
+	for _, ele := range *list {
+		if fn(ele) {
+			filtered = append(filtered, ele)
+		}
+	}
+	return &filtered
 }
