@@ -157,6 +157,16 @@ func ToSnakeCase(str string) string {
 	return strings.ToLower(snake)
 }
 
+func ToPascalCase(str string) string {
+	// Remove all underscores
+	str = strings.ReplaceAll(str, "_", " ")
+	// Convert to title case
+	str = strings.Title(str)
+	// Remove all spaces
+	str = strings.ReplaceAll(str, " ", "")
+	return str
+}
+
 func FilterList[T any](list *[]T, fn func(T) bool) *[]T {
 	filtered := make([]T, 0)
 	for _, ele := range *list {
