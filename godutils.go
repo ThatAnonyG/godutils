@@ -186,3 +186,8 @@ func FilterListP[T any](list *[]*T, fn func(*T) bool) *[]*T {
 	}
 	return &filtered
 }
+
+func InSameClock(t time.Time, loc *time.Location) time.Time {
+	y, m, d := t.Date()
+	return time.Date(y, m, d, t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), loc)
+}
