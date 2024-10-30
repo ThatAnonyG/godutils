@@ -63,3 +63,21 @@ func TestInSameClock(t *testing.T) {
 		t.Errorf("InSameClock() = %v, want %v", got, want)
 	}
 }
+
+func TestConvertTimezone(t *testing.T) {
+	kolLoc, err := time.LoadLocation("Asia/Kolkata")
+	if err != nil {
+		t.Errorf("time.LoadLocation() err: %v", err)
+	}
+	nyLoc, err := time.LoadLocation("America/New_York")
+	if err != nil {
+		t.Errorf("time.LoadLocation() err: %v", err)
+	}
+
+	t1 := time.Date(2024, 10, 25, 10, 30, 0, 0, kolLoc)
+	want := "2024-10-25 01:00:00 -0400 EDT"
+	got := ConvertTimezone(t1, kolLoc, nyLoc).String()
+	if got != want {
+		t.Errorf("ConvertTimezone() = %v, want %v", got, want)
+	}
+}

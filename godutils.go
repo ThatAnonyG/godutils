@@ -9,6 +9,9 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func FindInList[T any](list *[]T, fn func(T) bool) *T {
@@ -161,7 +164,8 @@ func ToPascalCase(str string) string {
 	// Remove all underscores
 	str = strings.ReplaceAll(str, "_", " ")
 	// Convert to title case
-	str = strings.Title(str)
+	caser := cases.Title(language.English)
+	str = caser.String(str)
 	// Remove all spaces
 	str = strings.ReplaceAll(str, " ", "")
 	return str
@@ -190,4 +194,18 @@ func FilterListP[T any](list *[]*T, fn func(*T) bool) *[]*T {
 func InSameClock(t time.Time, loc *time.Location) time.Time {
 	y, m, d := t.Date()
 	return time.Date(y, m, d, t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), loc)
+}
+
+func ConvertTimezone(t time.Time, currLoc *time.Location, newLoc *time.Location) time.Time {
+	t = InSameClock(t, currLoc)
+	return t.In(newLoc)
+}
+
+func TimezoneToOffset(timezone string) int {
+	loc, err := time.LoadLocation(timezone)
+	if err != nil {
+		return 0
+	}
+	_, offset := time.Now().In(loc).Zone()
+	return offset / 60
 }
