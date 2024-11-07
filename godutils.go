@@ -209,3 +209,17 @@ func TimezoneToOffset(timezone string) int {
 	_, offset := time.Now().In(loc).Zone()
 	return offset / 60
 }
+
+func RemoveSliceOrdered[T any](slice *[]T, i int) {
+	// Remove the element at index i
+	*slice = append((*slice)[:i], (*slice)[i+1:]...)
+}
+
+func RemoveSliceUnordered[T any](slice *[]T, i int) {
+	// Get the last index
+	lastIdx := len(*slice) - 1
+	// Move the last element to the index to be deleted
+	(*slice)[i] = (*slice)[lastIdx]
+	// Remove the last element
+	(*slice) = (*slice)[:lastIdx]
+}

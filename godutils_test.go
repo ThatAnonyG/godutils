@@ -2,6 +2,7 @@ package godutils
 
 import (
 	"reflect"
+	"slices"
 	"testing"
 	"time"
 )
@@ -79,5 +80,32 @@ func TestConvertTimezone(t *testing.T) {
 	got := ConvertTimezone(t1, kolLoc, nyLoc).String()
 	if got != want {
 		t.Errorf("ConvertTimezone() = %v, want %v", got, want)
+	}
+}
+
+func TestTimezoneToOffset(t *testing.T) {
+	timezone := "Asia/Kolkata"
+	got := TimezoneToOffset(timezone)
+	want := 330
+	if got != want {
+		t.Errorf("TimezoneToOffset() = %v, want %v", got, want)
+	}
+}
+
+func TestRemoveSliceOrdered(t *testing.T) {
+	list := []string{"a", "b", "c", "d"}
+	RemoveSliceOrdered(&list, 1)
+	want := []string{"a", "c", "d"}
+	if !reflect.DeepEqual(list, want) {
+		t.Errorf("RemoveSliceOrdered() = %v, want %v", list, want)
+	}
+}
+
+func TestRemoveSliceUnordered(t *testing.T) {
+	list := []string{"a", "b", "c", "d", "e"}
+	RemoveSliceUnordered(&list, 2)
+	want := []string{"a", "b", "e", "d"}
+	if slices.Contains(list, "c") || !reflect.DeepEqual(list, want) {
+		t.Errorf("RemoveSliceUnordered() = %v, want %v", list, want)
 	}
 }
